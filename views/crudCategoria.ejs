@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Categorías</title>
+</head>
+<body>
+    <h1>Crear Categoría</h1>
+    <form action="/categoria" method="post">
+        <label for="name">Nombre de la Categoría:</label>
+        <input type="text" name="name" id="name" required>
+        <button type="submit">Crear</button>
+    </form>
+
+    <h1>Lista de Categorías</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre de la Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% cat.forEach(categoria => { %>
+                <tr>
+                    <td><%= categoria.nombre_categoria %></td>
+                    <td>
+                        <a href="/deleteCat/<%= categoria.id_categoria %>">Borrar</a>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</body>
+</html>

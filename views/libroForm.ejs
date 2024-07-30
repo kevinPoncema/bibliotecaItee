@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir PDF</title>
+</head>
+<body>
+  <h1>Crear Libro</h1>
+  <form action="/createLibro" method="post">
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" name="categoria">
+      <% cat.forEach(categoria => { %>
+        <option value='<%=  categoria.id_categoria%>'>
+          <%= categoria.nombre_categoria %>
+        </option>
+      <% }) %>
+    </select><br><br>
+    <label for="authorLibro">Autor del libro:</label>
+    <input type="text" id="authorLibro" name="author"><br>
+    <label for="tituloLibro">Título del libro:</label>
+    <input type="text" id="tituloLibro" name="titulo"><br>
+    <label for="edicionLibro">Edición del libro:</label>
+    <input type="text" id="edicionLibro" name="edicion"><br>
+    <label for="editorialLibro">Editorial:</label>
+    <input type="text" id="editorialLibro" name="editorial"><br>
+    <button type="submit">Crear Libro</button>
+  </form>
+</body>
+</html>

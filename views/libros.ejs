@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Libros</title>
+    <!-- Agrega Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Lista de Libros</h2>
+        <!-- Formulario de búsqueda -->
+        <h2>Buscar</h2>
+        <form action="/filtrarLibro" method="post" class="mb-4">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria" name="id_categoria" class="form-control">
+                        <option value="-1">TODAS</option>
+                        <% cat.forEach(categoria => { %>
+                            <option value="<%= categoria.id_categoria %>"><%= categoria.nombre_categoria %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Edición</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% libros.forEach(libro => { %>
+                    <tr>
+                        <td><%= libro.tituloe_libro %></td>
+                        <td><%= libro.edicion_libro %></td>
+                        <td><%= libro.author %></td>
+                        <td><%= libro.Editorial %></td>
+                        <td>
+                            <a href="/deleteLibro/<%= libro.id_libro %>" class="btn btn-danger btn-sm">Eliminar</a>
+                            <a href="/updateLibro/<%= libro.id_libro %>" class="btn btn-primary btn-sm">Editar</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <!-- Agrega Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

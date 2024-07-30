@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Préstamo de Libros</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .no-results {
+            display: none;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Formulario de Préstamo de Libros</h1>
+
+        <!-- Formulario de Datos del Estudiante -->
+        <form id="studentForm" class="mb-4">
+            <div class="form-group">
+                <label for="nombreAlumno">Nombre del Alumno</label>
+                <input type="text" class="form-control" id="nombreAlumno" name="nombreAlumno" required>
+            </div>
+            <div class="form-group">
+                <label for="cursoSeccion">Curso/Sección</label>
+                <input type="text" class="form-control" id="cursoSeccion" name="cursoSeccion" required>
+            </div>
+        </form>
+
+        <!-- Formulario de Búsqueda de Libros -->
+        <h2>Buscar Libros</h2>
+        <form id="searchForm" class="mb-4">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="libroSearch">Buscar Libro</label>
+                    <input type="text" class="form-control" id="libroSearch" placeholder="Buscar por nombre del libro">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="categoriaSelect">Categoría</label>
+                    <select id="categoriaSelect" class="form-control">
+                        <option value="-1">TODAS</option>
+                        <% cat.forEach(categoria => { %>
+                            <option value="<%= categoria.id_categoria %>"><%= categoria.nombre_categoria %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+
+        <!-- Selector de Libros -->
+        <div class="form-group">
+            <label for="libroSelect">Seleccionar Libro</label>
+            <select id="libroSelect" class="form-control" name="idLibro">
+                <option value="">Selecciona un libro</option>
+            </select>
+            <div id="noResults" class="no-results">No se encontraron libros que coincidan con la búsqueda.</div>
+        </div>
+
+        <!-- Tabla de Libros Prestados -->
+        <h2>Libros Prestados</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre del Libro</th>
+                    <th>Autor</th>
+                    <th>Edición</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaLibros">
+                <!-- Aquí se añadirán las filas de libros prestados mediante JavaScript -->
+            </tbody>
+        </table>
+        <button id="printButton" class="btn btn-success">Imprimir</button>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita el envío del formulario
+
+            const nombre = document.getElementById('libroSearch').value;
+            const categoria = document.getElementById('categoriaSelect').value;
+
+            try {
+                const response = await fetch(`/prestar?nombre=${encodeURIComponent(nombre)}&id_categoria=${encodeURIComponent(categoria)}`);
+                const data = await response.json();
+
+                // Actualiza el selector de libros
+                const libroSelect = document.getElementById('libroSelect');
+                libroSelect.innerHTML = '<option value="">Selecciona un libro</option>'; // Limpiar el selector
+                const noResults = document.getElementById('noResults');
+                noResults.style.display = 'none';
+
+                if (data.libros.length > 0) {
+                    data.libros.forEach(libro => {
+                        const option = document.createElement('option');
+                        option.value = libro.id_libro;
+                        option.textContent = `${libro.tituloe_libro} - ${libro.nombre_categoria}`;
+                        option.dataset.nombre = libro.tituloe_libro;
+                        option.dataset.autor = libro.author;
+                        option.dataset.edicion = libro.edicion_libro;
+                        option.dataset.categoria = libro.nombre_categoria;
+                        libroSelect.appendChild(option);
+                    });
+                } else {
+                    noResults.style.display = 'block';
+                }
+
+                // Guardar los libros en memoria para la tabla
+                window.libros = data.libros;
+            } catch (error) {
+                console.error('Error al buscar libros:', error);
+            }
+        });
+
+        document.getElementById('libroSelect').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const libroId = this.value;
+            const libroNombre = selectedOption.dataset.nombre;
+            const libroAutor = selectedOption.dataset.autor;
+            const libroEdicion = selectedOption.dataset.edicion;
+            const libroCategoria = selectedOption.dataset.categoria;
+
+            if (libroId && libroNombre) {
+                const tablaLibros = document.getElementById('tablaLibros');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${libroNombre}</td>
+                    <td>${libroAutor}</td>
+                    <td>${libroEdicion}</td>
+                    <td>${libroCategoria}</td>
+                    <td><button class="btn btn-danger btn-sm delete-button">Eliminar</button></td>
+                `;
+                tablaLibros.appendChild(row);
+
+                // Añadir evento de click para el botón de eliminar
+                row.querySelector('.delete-button').addEventListener('click', function() {
+                    row.remove();
+                });
+            }
+        });
+
+        document.getElementById('printButton').addEventListener('click', function() {
+            const nombreAlumno = document.getElementById('nombreAlumno').value;
+            const cursoSeccion = document.getElementById('cursoSeccion').value;
+            const librosPrestados = [];
+        
+            document.querySelectorAll('#tablaLibros tr').forEach(row => {
+                const libro = {
+                    nombre: row.cells[0].innerText,
+                    autor: row.cells[1].innerText,
+                    edicion: row.cells[2].innerText,
+                    categoria: row.cells[3].innerText
+                };
+                librosPrestados.push(libro);
+            });
+        
+            const datos = {
+                alumno: {
+                    nombre: nombreAlumno,
+                    curso: cursoSeccion
+                },
+                libros: librosPrestados
+            };
+        
+            // Enviar los datos al endpoint e imprimir la vista
+            fetch('/imprimir', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Crear una nueva ventana y escribir el HTML en ella
+                const printWindow = window.open('', '', 'height=500,width=800');
+                printWindow.document.write(html);
+                printWindow.document.close();
+                printWindow.print();
+            })
+            .catch(error => console.error('Error al imprimir:', error));
+        });
+    </script>
+</body>
+</html>
+

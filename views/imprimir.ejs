@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imprimir Préstamo de Libros</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Préstamo de Libros</h1>
+        <p><strong>Año:</strong> <%= year %></p>
+        <p><strong>Fecha:</strong> <%= date %></p>
+        <p><strong>Nombre del Alumno:</strong> <%= alumno.nombre %></p>
+        <p><strong>Curso/Sección:</strong> <%= alumno.curso %></p>
+
+        <h2>Libros Prestados</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre del Libro</th>
+                    <th>Autor</th>
+                    <th>Edición</th>
+                    <th>Categoría</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% libros.forEach(libro => { %>
+                    <tr>
+                        <td><%= libro.nombre %></td>
+                        <td><%= libro.autor %></td>
+                        <td><%= libro.edicion %></td>
+                        <td><%= libro.categoria %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p><strong>Firma de Entrega:</strong></p>
+                <p>___________________________</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Firma de Recibido:</strong></p>
+                <p>___________________________</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Libros</title>
+    <!-- Incluye Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Lista de Libros</h1>
+        
+        <!-- Formulario de búsqueda -->
+        <h2>Buscar</h2>
+        <form action="/filtrarPdfs" method="post" class="mb-4">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria" name="id_categoria" class="form-control">
+                        <option value="-1">TODAS</option>
+                        <% cat.forEach(categoria => { %>
+                            <option value="<%= categoria.id_categoria %>"><%= categoria.nombre_categoria %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+
+        <!-- Tabla de libros -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>URL</th>
+                    <% if (rango >= 1) { %>
+                        <th>Acciones</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% books.forEach(book => { %>
+                <tr>
+                    <td><%= book.id_book %></td>
+                    <td><%= book.nombre_book %></td>
+                    <td><%= book.categoria_book %></td>
+                    <td><a href="<%= book.url %>" target="_blank">Ver PDF</a></td>
+                    <% if (rango >= 1) { %>
+                        <td><a href="/deleteBook/<%= book.id_book %>" class="btn btn-danger btn-sm">Borrar</a></td>
+                    <% } %>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Incluye Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

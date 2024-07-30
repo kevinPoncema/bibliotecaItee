@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Libro</title>
+    <!-- Agrega Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Editar Libro</h2>
+        <form action="/updateLibro/<%= data.id_libro %>" method="POST">
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" value="<%= data.tituloe_libro %>">
+            </div>
+            <div class="form-group">
+                <label for="edicion">Edición:</label>
+                <input type="text" class="form-control" id="edicion" name="edicion" value="<%= data.edicion_libro %>">
+            </div>
+            <div class="form-group">
+                <label for="author">Autor:</label>
+                <input type="text" class="form-control" id="author" name="author" value="<%= data.author %>">
+            </div>
+            <div class="form-group">
+                <label for="editorial">Editorial:</label>
+                <input type="text" class="form-control" id="editorial" name="editorial" value="<%= data.Editorial %>">
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <select class="form-control" id="categoria" name="categoria">
+                    <% cat.forEach(categoria => { %>
+                        <option value="<%= categoria.id_categoria %>" <% if (categoria.id_categoria === data.id_categoria) { %> selected <% } %>>
+                            <%= categoria.nombre_categoria %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="/libros" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <!-- Agrega Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
